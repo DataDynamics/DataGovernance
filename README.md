@@ -3,6 +3,9 @@
 - [데이터 관리 및 거버넌스 정리](#데이터-관리-및-거버넌스-정리)
   - [데이터 거버넌스에서 제공하는 기능](#데이터-거버넌스에서-제공하는-기능)
   - [데이터 거버넌스와 Datahub 비교](#데이터-거버넌스와-datahub-비교)
+  - [개발 단계별 기능 분류](#개발-단계별-기능-분류)
+    - [개발 단계별 기능](#개발-단계별-기능)
+    - [우선순위 요약](#우선순위-요약)
   - [Data Portal](#data-portal)
     - [기능](#기능)
     - [Datahub에 부족한 기능](#datahub에-부족한-기능)
@@ -72,13 +75,51 @@
 | 감사 및 모니터링            | 변경이력 감사, 접근로그, KPI 대시보드   | ⚠ 일부지원됨       | 메타데이터 변경 이력이나 로그는 일부 가능하나, 통합 거버넌스 KPI 대시보드 등은 기본 패키지에서 완전하게 제공된다고 보기 어려움.                                                                |
 | 통합 및 연계                | 외부 시스템 연동(API/SDK)               | ✅ 지원됨           | API/SDK 제공, 다양한 커넥터 존재. ([docs.datahub.com][3])                                                                                                                                      |
 |                             | 이벤트 기반 연계(Streaming)             | ⚠ 제한됨           | “Active metadata / streaming” 개념이 제시되어 있으나, 완전 자동화된 이벤트 기반 연계가 모든 소스에 준비되어 있지는 않음. ([Medium][6])                                                         |
+## 개발 단계별 기능 분류
 
-[1]: https://docs.datahub.com/integrations?utm_source=chatgpt.com "The #1 Open Source Metadata Platform - DataHub"
-[2]: https://www.scalefree.com/blog/data-warehouse/mastering-metadata-data-catalogs-in-data-warehousing-with-datahub/?utm_source=chatgpt.com "Data Catalogs in Data Warehousing with Datahub - Scalefree"
-[3]: https://docs.datahub.com/docs/features?utm_source=chatgpt.com "What is DataHub? | DataHub"
-[4]: https://atlan.com/know/data-catalog/datahub/column-level-lineage/?utm_source=chatgpt.com "DataHub Data Lineage: Features, Supported Sources & More - Atlan"
-[5]: https://datahubproject.io/docs/features/feature-guides/access-management?utm_source=chatgpt.com "Access Management - DataHub"
-[6]: https://medium.com/datahub-project/5-features-to-look-out-for-in-a-modern-data-catalog-31dfa4d32957?utm_source=chatgpt.com "5 Features to Look Out for in a Modern Data Catalog | DataHub"
+### 개발 단계별 기능
+
+| 영역                                      | 개발 항목                                   | 목적 / 가치                         | 구현 포인트 (DataHub / Flowable 연계 중심)                               | 우선순위 |
+| ----------------------------------------- | ------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------ | -------- |
+| **1. 검색 및 탐색**                       | 고급 검색 (다국어, 키워드 가중치, 동의어)   | 메타데이터 탐색 효율 향상           | Elastic 기반 인덱스 확장, 동의어 사전·가중치 설정, 다국어 인덱싱         | 1단계    |
+|                                           | 주제 분류 브라우징 (계층형 Taxonomy)        | 주제별·조직별 탐색 구조 제공        | DataHub Glossary/Tag 계층형 UI 구현                                      | 1단계    |
+|                                           | 컬렉션/큐레이션 (테마 단위 묶음)            | 프로젝트·도메인 단위 데이터 구성    | 커스텀 엔티티(Collection Entity) 정의, Flowable 승인 프로세스 연결       | 2단계    |
+| **2. 메타데이터 관리 및 승인**            | 메타데이터 변경 제안 및 승인(Flowable 결재) | 무분별한 수정 방지 및 거버넌스 강화 | DataHub UI에서 “변경 제안” → Flowable Process (검토·승인) → DataHub 반영 | 1단계    |
+|                                           | 신규 데이터셋 등록 승인                     | 등록 절차 표준화 및 검증            | 등록요청 → Flowable 승인 후 DataHub Entity 생성                          | 1단계    |
+|                                           | 보안등급 변경 결재 (Flowable 프로세스)      | 민감도 변경 통제                    | 보안등급 필드 변경 이벤트 → BPM 승인 → 반영                              | 1단계    |
+|                                           | SLA / 갱신주기 변경 승인                    | 변경 이력 및 영향 추적              | SLA 변경 시 Flowable 프로세스 실행 → 승인 후 반영                        | 2단계    |
+|                                           | 사용자 정의 메타필드 관리                   | 조직별 확장성 확보                  | Metadata Schema 확장 + Dynamic UI 생성                                   | 1단계    |
+| **3. 데이터 접근 및 제공**                | 데이터 샘플 / 미리보기 기능                 | 데이터 활용성 검증                  | DataHub Entity → Query 엔진(Presto/Hive) → 제한행 미리보기               | 1단계    |
+|                                           | 다운로드 / Export 요청 승인                 | 보안 데이터 다운로드 관리           | 다운로드 요청 → Flowable 승인 → 파일 발급/링크 생성                      | 2단계    |
+|                                           | Open API 카탈로그 / 승인형 API 발급         | 외부 연계 및 접근제어               | API 등록/요청 → BPM 승인 → 키 발급 및 만료관리                           | 3단계    |
+| **4. 결재 및 워크플로우 (Flowable 중심)** | 메타데이터 변경 통합 승인 프로세스          | 통합 거버넌스                       | Flowable BPMN: 등록, 수정, 폐기, 보안등급 변경 등 프로세스 템플릿화      | 1단계    |
+|                                           | 다단계 결재선 / 병렬 승인                   | 복잡한 승인체계 지원                | Flowable에서 다단계/조건부 승인 설계                                     | 2단계    |
+|                                           | 결재 결과 알림 및 로그 기록                 | 투명성 확보                         | 승인 결과 Webhook → DataHub Event Stream / Slack / Email 연계            | 1단계    |
+| **5. 알림 및 피드백**                     | 변경/승인 이벤트 알림                       | 메타데이터 변경 가시화              | DataHub Kafka Event → Flowable Event Listener → Notification 서비스      | 1단계    |
+|                                           | 구독 기능 (데이터셋 단위)                   | 변경 모니터링                       | DataHub Subscription API + 사용자 구독 목록 관리                         | 2단계    |
+|                                           | 사용자 의견 / 오류 신고                     | 품질 개선 피드백 채널               | 포털 내 Feedback 등록 → 담당자/Flowable Task 생성                        | 2단계    |
+| **6. 통계 및 모니터링**                   | 승인/변경 통계 대시보드                     | 운영 효율 분석                      | Flowable 프로세스 이력 + DataHub Usage 집계                              | 2단계    |
+|                                           | 메타데이터 조회/활용 통계                   | 인기 데이터 파악                    | API 사용량, 조회수, 다운로드 수 집계                                     | 3단계    |
+| **7. 인증 및 보안 (ABAC 제외)**           | SSO (OIDC/SAML/LDAP 연동)                   | 단일 로그인 환경                    | 조직 인증 시스템 연동, 사용자 역할 매핑                                  | 1단계    |
+|                                           | 역할기반 접근제어 (RBAC)                    | 역할 중심 권한관리                  | DataHub RolePolicy + Flowable Role 기반 결재 연동                        | 1단계    |
+|                                           | 감사로그 및 변경 이력                       | 컴플라이언스 대응                   | 모든 변경/결재/다운로드 이벤트 로깅                                      | 1단계    |
+| **8. 관리 및 운영도구**                   | 관리자 콘솔 (메뉴·공지·배포관리)            | 운영 관리 효율                      | Feature Toggle, 공지 배너, 메뉴 관리 UI                                  | 2단계    |
+|                                           | 메타데이터 템플릿 (도메인별 양식)           | 표준화                              | 등록 유형별 템플릿 정의 (테이블/파일/BI 등)                              | 3단계    |
+|                                           | 릴리스노트 / 변경이력 보기                  | 변경투명성 강화                     | Diff UI + 승인일자/결재자 표시                                           | 3단계    |
+| **9. 외부 연계**                          | 하류시스템 알림 (Webhook, REST API)         | 변경사항 실시간 전파                | Flowable 승인 완료 시 Webhook 호출                                       | 1단계    |
+|                                           | API 게이트웨이 연계 (Kong 등)               | API 접근 관리                       | Flowable 승인 → API Gateway 정책 반영                                    | 3단계    |
+| **10. 법무·컴플라이언스**                 | 이용약관 동의 및 로그                       | 법적 대응                           | 다운로드/API 호출 전 이용동의 기록                                       | 2단계    |
+|                                           | 데이터셋 보존 정책                          | 데이터 수명 관리                    | 보존기간·자동 비공개·폐기 프로세스                                       | 3단계    |
+
+
+### 우선순위 요약
+
+| 단계                    | 핵심 내용                                                                                            | 목표                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **1단계 (핵심 구축기)** | 검색, 메타데이터 변경 및 승인(Flowable), 보안등급 결재, 데이터 미리보기, SSO, 감사로그, Webhook 알림 | **DataHub + Flowable 기본 통합 / 결재 프로세스 완성** |
+| **2단계 (확장기)**      | SLA 변경, 다운로드 승인, 피드백, 통계대시보드, 공지/관리콘솔, 이용약관, 컬렉션 기능                  | **운영/거버넌스 강화 및 사용자 참여 확대**            |
+| **3단계 (고도화기)**    | API 게이트웨이 연계, 릴리스노트, 버전관리, 보존정책, 고급 통계                                       | **엔터프라이즈급 확장 및 규제 대응 체계 완성**        |
+
 
 ## Data Portal
 
