@@ -87,7 +87,7 @@
 |                                        | 탐색(Browse)                               | 계층적 탐색 지원: 예컨대 데이터베이스 → 스키마 → 테이블 순으로 탐색 가능. ([GitHub][3])                       | UI 업데이트가 이루어진 버전(v1.0)에서 개선됨. ([GitHub][3])                                                 |
 | 메타데이터 수집 (Ingestion)            | 자동／수동 메타데이터 수집                 | 다양한 데이터 소스(connector)를 통해 메타데이터를 수집하거나 수동 등록 가능. ([docs.datahub.com][4])          | 수집 대상 및 방식은 확장 가능한 아키텍처로 설계됨. ([Medium][2])                                            |
 |                                        | UI 기반 수집(ingestion)                    | UI 통해 간단히 수집 설정 가능. ([docs.datahub.com][1])                                                        | 사용자가 기술적으로 설치하거나 개발하지 않고도 메타데이터 수집 설정 가능.                                   |
-| 데이터 계보(데이터 라인리지) (Lineage) | 테이블/컬럼 수준 라인리지 표시             | 데이터 흐름(어디서 왔고 어디로 가는지) 시각화 가능. ([Atlan][5])                                              | 일부 데이터 소스에서는 컬럼 수준 지원이 제한적일 수 있음. ([Atlan][5])                                      |
+| 데이터 계보(데이터 리니지) (Lineage) | 테이블/컬럼 수준 리니지 표시             | 데이터 흐름(어디서 왔고 어디로 가는지) 시각화 가능. ([Atlan][5])                                              | 일부 데이터 소스에서는 컬럼 수준 지원이 제한적일 수 있음. ([Atlan][5])                                      |
 |                                        | 영향 분석(Impact Analysis)                 | 특정 자산이 변경되었을 때 downstream/upstream에 미치는 영향 분석 가능. ([Medium][6])                          | 복잡한 파이프라인에서는 설정/수집이 추가로 필요할 수 있음.                                                  |
 | 데이터 거버넌스(Governance)            | 소유자 및 책임자 지정(Ownership)           | 각 자산에 데이터 소유자 또는 책임자(owner)를 지정할 수 있어 관리 체계 강화됨. ([docs.datahub.com][1])         | 조직 내부 역할과 연계해 사용하면 효과적입니다.                                                              |
 |                                        | 민감 데이터 식별 및 분류(Sensitivity/PII)  | 민감 데이터(PII 등)에 태그/분류를 지정할 수 있음. ([docs.datahub.com][1])                                     | 자동 스캐닝 기능은 별도 구현이 필요할 수 있음.                                                              |
@@ -96,7 +96,7 @@
 | API & SDK                              | 프로그래밍 방식 접근                       | 다양한 언어/SDK/API를 통해 메타데이터 조회·등록 가능. ([docs.datahub.com][1])                                 | 자동화나 커스텀 처리에 매우 유용합니다.                                                                     |
 | 확장성(Extensibility)                  | 커넥터 및 플러그인 확장                    | 새로운 데이터 소스나 커스텀 메타데이터 모델을 추가할 수 있는 구조. ([Medium][2])                              | 조직 특성에 맞춰 메타데이터 모델을 설계할 수 있음.                                                          |
 | 스케일／성능(Scalability)              | 대규모 메타데이터 처리                     | 수천 개 이상의 데이터셋, 복잡한 파이프라인 처리에 적합. ([scalefree.com][8])                                  | 인프라(Elasticsearch, Kafka 등) 구성 고려 필요. ([Reddit][9])                                               |
-| 사용자 인터페이스(UI)                  | 사용자 친화적 UI 제공                      | 최신 버전에서 탐색, 라인리지 시각화, 필터 기능 등이 개선됨. ([GitHub][3])                                     | 사용성 향상을 위해 UI 버전이나 설정 확인 필요.                                                              |
+| 사용자 인터페이스(UI)                  | 사용자 친화적 UI 제공                      | 최신 버전에서 탐색, 리니지 시각화, 필터 기능 등이 개선됨. ([GitHub][3])                                     | 사용성 향상을 위해 UI 버전이나 설정 확인 필요.                                                              |
 
 [1]: https://docs.datahub.com/docs/features?utm_source=chatgpt.com "What is DataHub? | DataHub"
 [2]: https://medium.com/%40wajahatullah.k/why-datahub-could-be-your-go-to-option-for-open-source-data-lineage-d57632989b58?utm_source=chatgpt.com "Why DataHub Could Be Your Go-To Option for Open-Source Data ..."
@@ -117,14 +117,14 @@
 | **메타데이터 수집 (Ingestion)** | 커넥터 기반 메타데이터 수집                        | 다양한 데이터 소스(관계형 DB, 클라우드 데이터웨어하우스, 파일, 스토리지 등)로부터 메타데이터 수집 가능. ([docs.datahub.com][3]) |
 |                                 | UI/CLI 기반 수집 설정                              | UI 또는 CLI를 통해 메타데이터 수집 파이프라인을 설정할 수 있음. ([docs.datahub.com][1])                                         |
 | **메타데이터 모델링 & 관리**    | 확장 가능한 메타데이터 모델                        | 커스텀 자산 유형(custom entity types), 새로운 속성, 태그 등을 추가 가능. ([Medium][2])                                          |
-| **데이터 계보 (Lineage)**       | 테이블/뷰/컬럼 수준 라인리지 표시                  | 자산 간 상하관계(lineage)를 시각화하고 추적할 수 있음. ([Atlan][4])                                                             |
+| **데이터 계보 (Lineage)**       | 테이블/뷰/컬럼 수준 리니지 표시                  | 자산 간 상하관계(lineage)를 시각화하고 추적할 수 있음. ([Atlan][4])                                                             |
 | **데이터 거버넌스 & 관리**      | 소유자 & 책임자 지정(Ownership)                    | 각 자산에 소유자(owner)·책임자(responsible party) 등의 메타데이터를 지정 가능. ([Atlan][5])                                     |
 |                                 | 태그/분류(Taxonomy) 및 용어사전(Business Glossary) | 데이터 자산에 태그를 붙이거나 비즈니스 용어사전을 구축해 맥락을 부여 가능. ([docs.datahub.com][3])                              |
 |                                 | 접근 제어(Authorization / Policies)                | 메타데이터 플랫폼 수준에서 자산 접근 정책을 설정할 수 있는 기능 제공. ([datahub][6])                                            |
 | **API & SDK**                   | 메타데이터 조회/등록 API 및 SDK                    | REST/GraphQL API 또는 SDK를 통해 메타데이터를 프로그램 방식으로 조회·등록 가능. ([docs.datahub.com][1])                         |
 | **확장성 & 연계**               | 커넥터/플러그인 확장 구조                          | 새로운 데이터소스 커넥터를 추가하거나 사용자 정의 로직을 구현 가능. ([Medium][2])                                               |
 |                                 | 대규모 환경 적용 가능성                            | Elasticsearch 기반 색인, Kafka 기반 메타데이터 스트리밍 등을 통한 확장성 지원. ([Medium][2])                                    |
-| **UI/UX**                       | 웹 UI 제공                                         | 사용자 인터페이스로 자산 검색, 탐색, 메타데이터 조회, 라인리지 시각화 등을 제공. ([GitHub][7])                                  |
+| **UI/UX**                       | 웹 UI 제공                                         | 사용자 인터페이스로 자산 검색, 탐색, 메타데이터 조회, 리니지 시각화 등을 제공. ([GitHub][7])                                  |
 
 [1]: https://docs.datahub.com/docs/features?utm_source=chatgpt.com "What is DataHub? | DataHub"
 [2]: https://medium.com/%40wajahatullah.k/why-datahub-could-be-your-go-to-option-for-open-source-data-lineage-d57632989b58?utm_source=chatgpt.com "Why DataHub Could Be Your Go-To Option for Open-Source Data ..."
@@ -141,7 +141,7 @@
 | 소유자/책임자 지정(Ownership)                                | 자산(데이터셋, 테이블 등)에 소유자(owner)나 책임자(responsible party)를 메타데이터로 지정할 수 있음. ([docs.datahub.com][1])                    |
 | 태그/비즈니스 용어사전(Business Glossary) 및 도메인(Domains) | 자산에 태그(tag)를 붙이거나 용어사전(glossary) 항목을 관리하고, 도메인(Domain) 개념을 통해 조직 맥락을 부여할 수 있음. ([Atlan][2])             |
 | 접근 관리(Access Management) / 역할 기반 제어(RBAC)          | 외부 역할(external roles) 또는 사용자 역할(user roles)을 자산에 매핑하고, 기본적인 접근 제어를 설정할 수 있는 기능이 있음. ([datahub][3])       |
-| 데이터 라인리지(Lineage) 및 영향 분석(Impact Analysis)       | 데이터 흐름을 파악하기 위해 테이블 수준 또는 일부 컬럼 수준 라인리지를 지원하며, 상하관계(upstream/downstream)를 시각화할 수 있음. ([Atlan][4]) |
+| 데이터 리니지(Lineage) 및 영향 분석(Impact Analysis)       | 데이터 흐름을 파악하기 위해 테이블 수준 또는 일부 컬럼 수준 리니지를 지원하며, 상하관계(upstream/downstream)를 시각화할 수 있음. ([Atlan][4]) |
 | 메타데이터 검색/탐색 및 거버넌스 맥락 제공                   | 거버넌스 활동을 지원하기 위한 메타데이터 검색, 탐색, 탐색된 자산에 대한 문맥 제공 기능 등이 있음. ([Medium][5])                                 |
 
 [1]: https://docs.datahub.com/docs/features?utm_source=chatgpt.com "What is DataHub? | DataHub"
