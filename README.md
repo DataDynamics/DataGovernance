@@ -11,6 +11,7 @@
     - [주요 구성요소](#주요-구성요소)
     - [실행 환경](#실행-환경)
   - [Flowable BPM](#flowable-bpm)
+    - [주요 기능](#주요-기능-1)
     - [주요 구성요소](#주요-구성요소-1)
     - [실행 환경](#실행-환경-1)
   - [Datahub + Flowable](#datahub--flowable)
@@ -192,6 +193,51 @@
 | **인증/보안**     | OAuth2 / OIDC / SSO                        | 조직 인증 시스템과 연동 가능          |
 
 ## Flowable BPM
+
+### 주요 기능
+
+| 구분                     | 기능 항목                | 설명                                                   | 제공 여부             |
+| ------------------------ | ------------------------ | ------------------------------------------------------ | --------------------- |
+| **기본 구성 요소**       | Flowable Engine          | BPMN 2.0 프로세스 정의 실행 엔진                       | ✅                     |
+|                          | Flowable Task App        | 사용자 할당 업무(Task) 처리용 웹 UI                    | ✅                     |
+|                          | Flowable IDM App         | 사용자·그룹 관리, 로그인 인증 (기본 UI 포함)           | ✅                     |
+|                          | Flowable Admin App       | 실행 중인 프로세스, 배포 관리, 모니터링 UI             | ✅                     |
+|                          | Flowable REST API        | REST 기반 프로세스 배포·실행·조회 API                  | ✅                     |
+| **프로세스 정의 / 실행** | BPMN 2.0 표준 지원       | StartEvent, Task, Gateway, SubProcess 등 완전 지원     | ✅                     |
+|                          | 이벤트(Event) 처리       | Signal, Timer, Message 이벤트 지원                     | ✅                     |
+|                          | 프로세스 변수 관리       | Execution Variable, Local Variable 관리                | ✅                     |
+|                          | 프로세스 버전 관리       | 동일 프로세스의 다중 버전 관리 가능                    | ✅                     |
+|                          | 비동기 Job Executor      | 타이머, 비동기 서비스 Task 처리용 Job Executor 내장    | ✅                     |
+| **업무(Task) 처리**      | 사용자 할당 (User Task)  | 특정 사용자 또는 그룹에 Task 할당 가능                 | ✅                     |
+|                          | 자동 Task (Service Task) | Java Delegate / Spring Bean 기반 자동 실행             | ✅                     |
+|                          | 폼(Form) 기반 Task 처리  | 단순 Form 속성 기반 Task 입력/출력 지원                | ⚙️ 기본 수준           |
+| **모델 관리**            | BPMN XML 기반 모델 배포  | `.bpmn20.xml` 파일을 REST 또는 리소스 폴더로 배포 가능 | ✅                     |
+|                          | 웹 모델러 제공           | 브라우저에서 BPMN 모델 작성/저장                       | ❌ (엔터프라이즈 전용) |
+|                          | 외부 모델러 연동         | bpmn.io, Camunda Modeler 등 외부 도구 사용 가능        | ✅                     |
+| **의사결정(Decision)**   | DMN 1.1 규격 지원        | 규칙 기반 의사결정 테이블 실행 엔진                    | ✅                     |
+|                          | DMN 웹 모델러            | 웹 상에서 DMN 테이블 작성                              | ❌ (엔터프라이즈 전용) |
+| **케이스 관리(CMMN)**    | CMMN 1.1 표준 지원       | 비정형 프로세스(Case Model) 실행 가능                  | ✅                     |
+| **이벤트 처리(EDA)**     | Event Registry           | 메시지 기반 이벤트(AMQP, JMS, Kafka 등) 매핑           | ✅ (기본 모듈)         |
+| **통합 / 확장성**        | Spring Boot 통합         | `flowable-spring-boot-starter`로 손쉬운 통합 가능      | ✅                     |
+|                          | REST API 확장            | 커스텀 REST Endpoint 추가 가능                         | ✅                     |
+|                          | Java API                 | RuntimeService, TaskService 등 Java API 직접 호출 가능 | ✅                     |
+|                          | Database 독립성          | MySQL, PostgreSQL, Oracle 등 JDBC 기반 지원            | ✅                     |
+| **관리 / 모니터링**      | Admin App                | 배포 프로세스, 실행 인스턴스, Job 모니터링             | ✅                     |
+|                          | REST Query API           | 실행 인스턴스/히스토리 조회 API 제공                   | ✅                     |
+|                          | 히스토리 데이터 관리     | 프로세스 인스턴스 실행 로그 저장                       | ✅                     |
+| **보안 / 인증**          | 기본 IDM 모듈            | 사용자·그룹·권한 관리                                  | ✅                     |
+|                          | 외부 인증 연동           | LDAP, SSO 연동 가능 (Spring Security 기반)             | ⚙️ 직접 설정 필요      |
+| **배포 / 운영**          | 독립 실행형 WAR 배포     | Tomcat 등 서블릿 컨테이너에 배포 가능                  | ✅                     |
+|                          | Spring Boot 내장 서버    | 내장형 Spring Boot 기반 실행                           | ✅                     |
+|                          | 다중 데이터소스          | 각 엔진별 분리 설정 가능 (BPMN/DMN/CMMN/FORM)          | ✅                     |
+|                          | 클러스터링               | DB 기반 Job Locking으로 다중 노드 실행 가능            | ✅                     |
+| **UI / 포털**            | Task 관리 UI             | 할당된 업무(Task) 처리 UI                              | ✅                     |
+|                          | Process 시작/조회 UI     | 사용자가 프로세스 시작 및 상태 확인                    | ✅                     |
+|                          | Web Modeler              | 그래픽 모델링 UI                                       | ❌                     |
+|                          | Form Designer            | 웹 폼 작성 UI                                          | ❌ (Enterprise 전용)   |
+| **라이선스 / 배포 형태** | 라이선스                 | Apache License 2.0 (완전 오픈소스)                     | ✅                     |
+|                          | 배포 형태                | 소스 코드, WAR, Docker 이미지                          | ✅                     |
+
 
 ### 주요 구성요소
 
